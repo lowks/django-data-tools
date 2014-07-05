@@ -72,20 +72,22 @@ def objects_from_queryset(queryset, using='default'):
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--format', default='json', dest='format',
-            help='Specifies the output serialization format for fixtures.'),
+                    help='Specifies the output serialization format for fixtures.'),
         make_option('--indent', default=None, dest='indent', type='int',
-            help='Specifies the indent level to use when pretty-printing output'),
+                    help='Specifies the indent level to use when pretty-printing output'),
         make_option('--database', action='store', dest='database',
-            default=DEFAULT_DB_ALIAS, help='Nominates a specific database to load '
-                'fixtures into. Defaults to the "default" database.'),
-        make_option('-e', '--exclude', dest='exclude', action='append', default=[],
-            help='App to exclude (use multiple --exclude to exclude multiple apps).'),
-        make_option('-n', '--natural', action='store_true', dest='use_natural_keys', default=False,
-            help='Use natural keys if they are available.'),
+                    default=DEFAULT_DB_ALIAS, help='Nominates a specific database to load '
+                    'fixtures into. Defaults to the "default" database.'),
+        make_option('-e', '--exclude', dest='exclude',
+                    action='append', default=[],
+                    help='App to exclude (use multiple --exclude to exclude multiple apps).'),
+        make_option('-n', '--natural', action='store_true',
+                    dest='use_natural_keys', default=False,
+                    help='Use natural keys if they are available.'),
         make_option('-l', '--limit', dest='limit', type='int', default=None,
-            help='Limit the number of objects per app.'),
+                    help='Limit the number of objects per app.'),
         make_option('-s', '--sort', dest='sort', default=None,
-            help='Change the sort order (useful with limit). Defaults to no sorting. Options are \'asc\' and \'desc\''),
+                    help='Change the sort order (useful with limit). Defaults to no sorting. Options are \'asc\' and \'desc\''),
     )
     help = 'Output the contents of the database as a fixture of the given format.'
     args = '[appname appname.ModelName ...]'
@@ -199,7 +201,7 @@ class Command(BaseCommand):
 
         try:
             return serializers.serialize(format, objects, indent=indent,
-                        use_natural_keys=use_natural_keys)
+                                         use_natural_keys=use_natural_keys)
         except Exception, e:
             if show_traceback:
                 raise
@@ -239,7 +241,8 @@ def sort_dependencies(objects):
 
         # Now add a dependency for any FK or M2M relation with
         # a model that defines a natural key
-        for field in itertools.chain(model._meta.fields, model._meta.many_to_many):
+        for field in itertools.chain(model._meta.fields,
+                                     model._meta.many_to_many):
             if hasattr(field.rel, 'to') and field.rel.to != model:
                 deps.append(field.rel.to)
         model_dependencies.append((model, deps))
@@ -273,10 +276,12 @@ def sort_dependencies(objects):
             else:
                 skipped.append((model, deps))
         if not changed:
-            raise CommandError("Can't resolve dependencies for %s in serialized app list." %
-                ', '.join('%s.%s' % (model._meta.app_label, model._meta.object_name)
-                for model, deps in sorted(skipped, key=lambda obj: obj[0].__name__))
-            )
+            raise CommandError(
+                "Can't resolve dependencies for %s in serialized app list." %
+                ', '.join('%s.%s' % (model._meta.app_label,
+                                     model._meta.object_name)
+                          for model, deps in sorted(
+                          skipped, key=lambda obj: obj[0].__name__)))
         model_dependencies = skipped
 
     sorted_results = []

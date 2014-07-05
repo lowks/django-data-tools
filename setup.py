@@ -21,7 +21,8 @@ tests_require = [
 setup(
     name='django-data-tools',
     version='0.1.0',
-    description='',
+    description=('A set of utilities and improvements '
+                 'for managing data in Django'),
     author='David Cramer',
     author_email='dcramer@gmail.com',
     url='https://github.com/dcramer/django-data-tools',

@@ -21,11 +21,12 @@ class RangeQuerySetWrapper(object):
     and LESS THAN queries on the primary key.
     """
 
-    def __init__(self, queryset, step=1000, limit=None, min_id=None, max_id=None, sorted=True,
-                 select_related=[], callbacks=[], order_by='pk'):
+    def __init__(self, queryset, step=1000, limit=None,
+                 min_id=None, max_id=None, sorted=True, select_related=[],
+                 callbacks=[], order_by='pk'):
         # Support for slicing
         if queryset.query.low_mark == 0 and not\
-          (queryset.query.order_by or queryset.query.extra_order_by):
+           (queryset.query.order_by or queryset.query.extra_order_by):
             if limit is None:
                 limit = queryset.query.high_mark
             queryset.query.clear_limits()
@@ -94,7 +95,8 @@ class RangeQuerySetWrapper(object):
                         fkey, related = fkey.split('__')
                     else:
                         related = []
-                    attach_foreignkey(results, getattr(self.queryset.model, fkey, related))
+                    attach_foreignkey(results, getattr(self.queryset.model,
+                                                       fkey, related))
 
             if self.callbacks:
                 results = list(results)
